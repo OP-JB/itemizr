@@ -8,13 +8,26 @@ import Product from '../components/product';
 import EditProduct from '../components/edit-product';
 import AddProduct from '../components/add-product';
 import AddItemButton from '../components/add-item-button';
+import CreateOrderButton from '../components/create-order-button';
+import AddToCartButton from '../components/add-to-cart-button';
 import {formatNumToThreeDigitStr, formatPrice} from '../utility/helpers';
 
 const Products = (props) => {
   const [products, setProducts] = useState([]);
   const [addFormState, setAddFormState] = useState(false);
   const [editFormState, setEditFormState] = useState({id: null, isOpen: false});
+  const [orderModeState, setOrderModeState] = useState(false);
   const {overflowState, closeOverflow, toggleOverflow} = useOverflowState();
+
+  const toggleCheckedProduct = (checked, productId) => {
+    const updated = products.map((product) => {
+      if (product.id === productId) {
+        product.checked = checked;
+      }
+      return product;
+    });
+    setProducts(updated);
+  };
 
   const insertProduct = (newProduct) => setProducts([...products, newProduct]);
   const updateProducts = (productData) => {
@@ -29,7 +42,7 @@ const Products = (props) => {
 
   const getProducts = useCallback(async () => {
     const {pathname} = history.location;
-    const vendorId = props.match.params.vendorId;
+    const {vendorId} = props.match.params;
     const vendorPath = !vendorId ? '/products' : `/products/${vendorId}`;
     const path = pathname === vendorPath ? vendorPath : pathname;
     try {
@@ -88,6 +101,7 @@ const Products = (props) => {
     unit,
     par,
     onHand,
+    checked = false,
   }) => {
     const productNumber = formatNumToThreeDigitStr(id);
     const priceStr = formatPrice(price);
@@ -103,6 +117,7 @@ const Products = (props) => {
       unit: unitName,
       par,
       onHand,
+      checked,
     };
     return productData;
   };
@@ -119,8 +134,12 @@ const Products = (props) => {
     return overflowMenuState;
   };
 
+  const enableOrderMode = () => {
+    setOrderModeState(true);
+  };
   const renderProducts = () =>
     products.map((product) => {
+      console.log('rendering prods');
       const {id} = product;
       const productData = formatProduct(product);
       const toggleOverflowMenu = () => toggleOverflow(id);
@@ -144,6 +163,8 @@ const Products = (props) => {
           editProduct={editProduct}
           updateProducts={updateProducts}
           deleteProduct={deleteProduct}
+          orderMode={orderModeState}
+          toggleCheckedProduct={toggleCheckedProduct}
           overflowMenuState={overflowMenuState}
           toggleOverflow={toggleOverflowMenu}
         />
@@ -159,7 +180,16 @@ const Products = (props) => {
 
   return (
     <div className="page-pdg">
-      <Header title="Products" />
+      <Header
+        title="Products"
+        action={
+          orderModeState ? (
+            <AddToCartButton />
+          ) : (
+            <CreateOrderButton handleClick={enableOrderMode} disabled={true} />
+          )
+        }
+      />
       <table>
         <TableHeader headers={tableHeaders} />
         <tbody className="table-body">{products && renderProducts()}</tbody>

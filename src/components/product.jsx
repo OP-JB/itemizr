@@ -1,5 +1,4 @@
 import React, {Fragment, useState} from 'react';
-import {useOverflowState} from '../utility/hooks';
 import DataCells from './data-cells';
 import OverflowIcon from './overflow-icon';
 import OverflowMenu from './overflow-menu';
@@ -11,9 +10,18 @@ const Product = ({
   productData,
   editProduct,
   deleteProduct,
+  orderMode,
+  toggleCheckedProduct,
   overflowMenuState,
   toggleOverflow,
 }) => {
+  const [checkedState, setCheckedState] = useState(productData.checked);
+
+  const toggleCheck = () => {
+    setCheckedState(!checkedState);
+    toggleCheckedProduct(!checkedState, id);
+  };
+
   const renderPrice = (key) => {
     return key === 'price' ? (
       <div className="price-column">
@@ -37,6 +45,14 @@ const Product = ({
   return (
     <Fragment>
       <tr className="light-font">
+        {orderMode && (
+          <td>
+            <button
+              className={`custom-radio-btn ${checkedState ? 'checked' : ''}`}
+              onClick={toggleCheck}
+            ></button>
+          </td>
+        )}
         <DataCells data={productValues} />
         <OverflowIcon toggleMenu={toggleOverflow} />
         {overflowMenuState && (

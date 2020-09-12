@@ -343,6 +343,16 @@ table {
   box-sizing: content-box;
 }
 
+.action-btn.add-to-cart {
+  background: #ffffff;
+  border: 1px solid #000000;
+  color: black;
+}
+
+.action-btn.add-to-cart:hover {
+  border: 1px solid #000000;
+}
+
 .action-btn.cancel-btn {
   background-color: #dadada;
   color: #000;
@@ -362,6 +372,14 @@ table {
   cursor: pointer;
   font-weight: bold;
   transition: all 0.2s ease-in-out;
+}
+
+.action-btn:disabled {
+  background: rgba(1, 196, 216, 0.3);
+}
+
+.action-btn a {
+  color: white;
 }
 
 .action-btn:hover {

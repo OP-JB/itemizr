@@ -58,6 +58,19 @@ td:not(.edit-product-row) {
   display: inline;
 }
 
+.custom-radio-btn {
+  width: 15px;
+  height: 15px;
+  background-color: white;
+  border-radius: 25px;
+  border: 2px solid #000000;
+  outline: none;
+}
+
+.custom-radio-btn.checked {
+  background-color: #01c4d8;
+}
+
 @media only screen and (max-width: 640px) {
   tr th:first-child,
   tr td:first-child:not(.edit-product-row) {

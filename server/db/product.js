@@ -22,10 +22,6 @@ const Product = db.define('product', {
     type: Sequelize.INTEGER,
     defaultValue: 0,
   },
-  orderQty: {
-    type: Sequelize.INTEGER,
-    defaultValue: 0,
-  },
 });
 
 module.exports = Product;
