@@ -343,6 +343,16 @@ table {
   box-sizing: content-box;
 }
 
+.action-btn-row {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.action-btn-row button {
+  margin: 20px 10px 0;
+}
+
 .action-btn.cart-link {
   background: #ffffff;
   border: 1px solid #000000;
@@ -427,9 +437,10 @@ table {
   margin-right: 1em;
   cursor: pointer;
   color: black;
-  &:hover {
-    opacity: 1;
-  }
+}
+
+.close:hover {
+  opacity: 1;
 }
 
 .user-msg {

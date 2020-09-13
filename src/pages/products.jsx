@@ -10,7 +10,7 @@ import AddProduct from '../components/add-product';
 import AddItemButton from '../components/add-item-button';
 import CreateOrderButton from '../components/create-order-button';
 import CartLink from '../components/cart-link';
-import AddToCartButton from '../components/add-to-cart-button';
+import AddToCart from '../components/add-to-cart';
 import {formatNumToThreeDigitStr, formatPrice} from '../utility/helpers';
 
 const Products = (props) => {
@@ -136,9 +136,8 @@ const Products = (props) => {
     return overflowMenuState;
   };
 
-  const enableOrderMode = () => {
-    setOrderModeState(true);
-  };
+  const enableOrderMode = () => setOrderModeState(true);
+  const disableOrderMode = () => setOrderModeState(false);
 
   const addToCart = async () => {
     const products = getCheckedProducts();
@@ -192,8 +191,9 @@ const Products = (props) => {
     );
 
   const renderAddToCart = () => (
-    <AddToCartButton
-      handleClick={addToCart}
+    <AddToCart
+      addToCart={addToCart}
+      disableOrderMode={disableOrderMode}
       disabled={getCheckedProducts().length}
     />
   );
