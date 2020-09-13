@@ -3,7 +3,7 @@ import {useOverflowState} from '../utility/hooks';
 import history from '../history';
 import axios from 'axios';
 import Header from '../components/header';
-import AddToCartB from '../components/add-to-cart';
+import AddToCart from '../components/add-to-cart';
 
 const Cart = (props) => {
   const [products, setProducts] = useState([]);

@@ -18,6 +18,7 @@ const Products = (props) => {
   const [addFormState, setAddFormState] = useState(false);
   const [editFormState, setEditFormState] = useState({id: null, isOpen: false});
   const [orderModeState, setOrderModeState] = useState(false);
+  const [cartQty, setCartQty] = useState(0);
   const {overflowState, closeOverflow, toggleOverflow} = useOverflowState();
 
   const insertProduct = (newProduct) => setProducts([...products, newProduct]);
@@ -139,10 +140,13 @@ const Products = (props) => {
   const enableOrderMode = () => setOrderModeState(true);
   const disableOrderMode = () => setOrderModeState(false);
 
+  const updateCartQty = (quantity) => setCartQty(quantity);
+
   const addToCart = async () => {
     const products = getCheckedProducts();
     try {
-      await axios.post('/api/orders/cart', products);
+      const {data} = await axios.post('/api/orders/cart', products);
+      updateCartQty(data.length);
     } catch (err) {
       console.error(err);
     }
@@ -194,7 +198,7 @@ const Products = (props) => {
     <AddToCart
       addToCart={addToCart}
       disableOrderMode={disableOrderMode}
-      disabled={getCheckedProducts().length}
+      disabled={!getCheckedProducts().length}
     />
   );
 
@@ -204,7 +208,7 @@ const Products = (props) => {
         title="Products"
         action={
           orderModeState ? (
-            <CartLink />
+            <CartLink quantity={cartQty} />
           ) : (
             <CreateOrderButton handleClick={enableOrderMode} disabled={true} />
           )

@@ -354,9 +354,17 @@ table {
 }
 
 .action-btn.cart-link {
+  display: flex;
+  justify-content: space-between;
   background: #ffffff;
   border: 1px solid #000000;
   color: black;
+  padding: 0 24px;
+  width: 94px;
+}
+
+.action-btn.cart-link.empty {
+  width: 50px;
 }
 
 .action-btn.cart-link:hover {

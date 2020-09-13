@@ -5,7 +5,7 @@ const AddToCart = ({addToCart, disableOrderMode, disabled}) => (
     <button className="action-btn cancel-btn" onClick={disableOrderMode}>
       Back
     </button>
-    <button className="action-btn" onClick={addToCart} disabled={false}>
+    <button className="action-btn" onClick={addToCart} disabled={disabled}>
       Add To Cart
     </button>
   </div>

@@ -18,6 +18,7 @@ router.get('/cart', async (req, res, next) => {
 });
 
 router.post('/cart', (req, res, next) => {
+  const cart = [];
   req.body.forEach(async (product) => {
     try {
       const [order] = await Order.findOrCreate({
@@ -26,10 +27,14 @@ router.post('/cart', (req, res, next) => {
           complete: false,
         },
       });
-      await order.addProduct(product.id);
-      res.json(order);
+      const [cartItem] = await order.addProduct(product.id);
+      if (cartItem) cart.push(product.id);
     } catch (err) {
       next(err);
+    } finally {
+      if (cart.length === req.body.length) {
+        res.send(cart);
+      }
     }
   });
 });
