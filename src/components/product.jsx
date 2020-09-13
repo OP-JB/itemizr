@@ -27,7 +27,7 @@ const Product = ({
       <div className="price-column">
         <p>{`$ ${productData.price}`}</p>
         <span className="unit-container">
-          <p>{productData.quantity}</p>
+          <p>{productData.packageQty}</p>
           <p>/</p>
           <p>{productData.unit}</p>
         </span>
@@ -35,7 +35,7 @@ const Product = ({
     ) : null;
   };
 
-  const priceKeys = ['price', 'quantity', 'unit'];
+  const priceKeys = ['price', 'packageQty', 'unit'];
   const productKeys = Object.keys(productData);
   const formattedProductData = productKeys.map((key) =>
     priceKeys.includes(key) ? renderPrice(key) : productData[key]

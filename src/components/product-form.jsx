@@ -42,7 +42,7 @@ const ProductForm = ({
     category,
     vendor,
     price,
-    quantity,
+    packageQty,
     unit,
     par,
     onHand,
@@ -101,13 +101,11 @@ const ProductForm = ({
             />
             <div className="unit-input">
               <div className="flex-item">
-                <label className="hidden-label" htmlFor="quantity">
-                  Quantity
-                </label>
+                <label className="hidden-label" htmlFor="packageQty"></label>
                 <input
-                  placeholder={quantity}
-                  name="quantity"
-                  value={quantity}
+                  placeholder={packageQty}
+                  name="packageQty"
+                  value={packageQty}
                   onChange={handleChange}
                 />
               </div>

@@ -32,8 +32,8 @@ Unit.hasMany(Product);
 
 User.hasMany(User, {as: 'employees'});
 
-User.hasMany(Order);
-Order.belongsTo(User);
+Vendor.hasMany(Order);
+Order.belongsTo(Vendor);
 
 Product.belongsToMany(Order, {through: CartItem});
 Order.belongsToMany(Product, {through: CartItem});

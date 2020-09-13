@@ -9,6 +9,7 @@ import EditProduct from '../components/edit-product';
 import AddProduct from '../components/add-product';
 import AddItemButton from '../components/add-item-button';
 import CreateOrderButton from '../components/create-order-button';
+import CartLink from '../components/cart-link';
 import AddToCartButton from '../components/add-to-cart-button';
 import {formatNumToThreeDigitStr, formatPrice} from '../utility/helpers';
 
@@ -19,17 +20,8 @@ const Products = (props) => {
   const [orderModeState, setOrderModeState] = useState(false);
   const {overflowState, closeOverflow, toggleOverflow} = useOverflowState();
 
-  const toggleCheckedProduct = (checked, productId) => {
-    const updated = products.map((product) => {
-      if (product.id === productId) {
-        product.checked = checked;
-      }
-      return product;
-    });
-    setProducts(updated);
-  };
-
   const insertProduct = (newProduct) => setProducts([...products, newProduct]);
+
   const updateProducts = (productData) => {
     const updatedProducts = products.map((product) => {
       const updated = product.id === productData.id ? productData : product;
@@ -38,6 +30,16 @@ const Products = (props) => {
       return updated;
     });
     setProducts(updatedProducts);
+  };
+
+  const toggleCheckedProduct = (checked, productId) => {
+    const updated = products.map((product) => {
+      if (product.id === productId) {
+        product.checked = checked;
+      }
+      return product;
+    });
+    setProducts(updated);
   };
 
   const getProducts = useCallback(async () => {
@@ -97,7 +99,7 @@ const Products = (props) => {
     category,
     vendor,
     price,
-    quantity,
+    packageQty,
     unit,
     par,
     onHand,
@@ -113,7 +115,7 @@ const Products = (props) => {
       category: categoryName,
       vendor: vendor.name,
       price: priceStr,
-      quantity,
+      packageQty,
       unit: unitName,
       par,
       onHand,
@@ -137,9 +139,20 @@ const Products = (props) => {
   const enableOrderMode = () => {
     setOrderModeState(true);
   };
+
+  const addToCart = async () => {
+    const products = getCheckedProducts();
+    try {
+      await axios.post('/api/orders/cart', products);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const getCheckedProducts = () => products.filter(({checked}) => checked);
+
   const renderProducts = () =>
     products.map((product) => {
-      console.log('rendering prods');
       const {id} = product;
       const productData = formatProduct(product);
       const toggleOverflowMenu = () => toggleOverflow(id);
@@ -178,13 +191,20 @@ const Products = (props) => {
       <AddItemButton text="Add a product" handleClick={openAddForm} />
     );
 
+  const renderAddToCart = () => (
+    <AddToCartButton
+      handleClick={addToCart}
+      disabled={getCheckedProducts().length}
+    />
+  );
+
   return (
     <div className="page-pdg">
       <Header
         title="Products"
         action={
           orderModeState ? (
-            <AddToCartButton />
+            <CartLink />
           ) : (
             <CreateOrderButton handleClick={enableOrderMode} disabled={true} />
           )
@@ -194,7 +214,9 @@ const Products = (props) => {
         <TableHeader headers={tableHeaders} />
         <tbody className="table-body">{products && renderProducts()}</tbody>
       </table>
-      {!editFormState.isOpen && renderAddProduct()}
+      {orderModeState
+        ? renderAddToCart()
+        : !editFormState.isOpen && renderAddProduct()}
     </div>
   );
 };

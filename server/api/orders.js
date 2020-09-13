@@ -1,27 +1,5 @@
 const router = require('express').Router();
-const {Product, Order, CartItem, Vendor} = require('./index');
-
-// ==> create new vendors cart <== //
-//api/orders/addToCart/?ProductId=int&size=int&quantity=int
-router.post('/cart/add', async (req, res, next) => {
-  try {
-    const product = await Product.findById(req.query.productId);
-    const [order] = await Order.findOrCreate({
-      where: {
-        vendorId: req.vendor.id,
-        complete: false,
-      },
-    });
-    await order.addProduct(product, {
-      through: {
-        quantity: req.query.quantity,
-      },
-    });
-    res.json(order);
-  } catch (err) {
-    next(err);
-  }
-});
+const {Product, Order, CartItem, Vendor} = require('../db');
 
 router.get('/cart', async (req, res, next) => {
   try {
@@ -37,6 +15,23 @@ router.get('/cart', async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+router.post('/cart', (req, res, next) => {
+  req.body.forEach(async (product) => {
+    try {
+      const [order] = await Order.findOrCreate({
+        where: {
+          vendorId: product.vendorId,
+          complete: false,
+        },
+      });
+      await order.addProduct(product.id);
+      res.json(order);
+    } catch (err) {
+      next(err);
+    }
+  });
 });
 
 router.put('/complete', async (req, res, next) => {

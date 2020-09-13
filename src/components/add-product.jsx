@@ -11,7 +11,7 @@ const AddProduct = ({insertProduct, closeForm}) => {
     category: '',
     vendor: '',
     price: '0.00',
-    quantity: 0,
+    packageQty: 0,
     unit: 'Unit',
     par: 0,
     onHand: 0,
