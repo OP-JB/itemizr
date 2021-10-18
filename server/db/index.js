@@ -6,6 +6,8 @@ const Vendor = require('./vendor');
 const Product = require('./product');
 const Category = require('./category');
 const Unit = require('./unit');
+const Order = require('./order');
+const CartItem = require('./cart-item');
 
 Vendor.belongsTo(User);
 User.hasMany(Vendor);
@@ -30,6 +32,12 @@ Unit.hasMany(Product);
 
 User.hasMany(User, {as: 'employees'});
 
+Vendor.hasMany(Order);
+Order.belongsTo(Vendor);
+
+Product.belongsToMany(Order, {through: CartItem});
+Order.belongsToMany(Product, {through: CartItem});
+
 module.exports = {
   db,
   User,
@@ -37,4 +45,6 @@ module.exports = {
   Product,
   Category,
   Unit,
+  Order,
+  CartItem,
 };

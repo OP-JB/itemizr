@@ -8,15 +8,21 @@ import Product from '../components/product';
 import EditProduct from '../components/edit-product';
 import AddProduct from '../components/add-product';
 import AddItemButton from '../components/add-item-button';
+import CreateOrderButton from '../components/create-order-button';
+import CartLink from '../components/cart-link';
+import AddToCart from '../components/add-to-cart';
 import {formatNumToThreeDigitStr, formatPrice} from '../utility/helpers';
 
 const Products = (props) => {
   const [products, setProducts] = useState([]);
   const [addFormState, setAddFormState] = useState(false);
   const [editFormState, setEditFormState] = useState({id: null, isOpen: false});
+  const [orderModeState, setOrderModeState] = useState(false);
+  const [cartQty, setCartQty] = useState(0);
   const {overflowState, closeOverflow, toggleOverflow} = useOverflowState();
 
   const insertProduct = (newProduct) => setProducts([...products, newProduct]);
+
   const updateProducts = (productData) => {
     const updatedProducts = products.map((product) => {
       const updated = product.id === productData.id ? productData : product;
@@ -27,9 +33,19 @@ const Products = (props) => {
     setProducts(updatedProducts);
   };
 
+  const toggleCheckedProduct = (checked, productId) => {
+    const updated = products.map((product) => {
+      if (product.id === productId) {
+        product.checked = checked;
+      }
+      return product;
+    });
+    setProducts(updated);
+  };
+
   const getProducts = useCallback(async () => {
     const {pathname} = history.location;
-    const vendorId = props.match.params.vendorId;
+    const {vendorId} = props.match.params;
     const vendorPath = !vendorId ? '/products' : `/products/${vendorId}`;
     const path = pathname === vendorPath ? vendorPath : pathname;
     try {
@@ -84,10 +100,11 @@ const Products = (props) => {
     category,
     vendor,
     price,
-    quantity,
+    packageQty,
     unit,
     par,
     onHand,
+    checked = false,
   }) => {
     const productNumber = formatNumToThreeDigitStr(id);
     const priceStr = formatPrice(price);
@@ -99,10 +116,11 @@ const Products = (props) => {
       category: categoryName,
       vendor: vendor.name,
       price: priceStr,
-      quantity,
+      packageQty,
       unit: unitName,
       par,
       onHand,
+      checked,
     };
     return productData;
   };
@@ -118,6 +136,23 @@ const Products = (props) => {
     const overflowMenuState = isOpen && productId === id && !addFormState;
     return overflowMenuState;
   };
+
+  const enableOrderMode = () => setOrderModeState(true);
+  const disableOrderMode = () => setOrderModeState(false);
+
+  const updateCartQty = (quantity) => setCartQty(quantity);
+
+  const addToCart = async () => {
+    const products = getCheckedProducts();
+    try {
+      const {data} = await axios.post('/api/orders/cart', products);
+      updateCartQty(data.length);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const getCheckedProducts = () => products.filter(({checked}) => checked);
 
   const renderProducts = () =>
     products.map((product) => {
@@ -144,6 +179,8 @@ const Products = (props) => {
           editProduct={editProduct}
           updateProducts={updateProducts}
           deleteProduct={deleteProduct}
+          orderMode={orderModeState}
+          toggleCheckedProduct={toggleCheckedProduct}
           overflowMenuState={overflowMenuState}
           toggleOverflow={toggleOverflowMenu}
         />
@@ -157,14 +194,33 @@ const Products = (props) => {
       <AddItemButton text="Add a product" handleClick={openAddForm} />
     );
 
+  const renderAddToCart = () => (
+    <AddToCart
+      addToCart={addToCart}
+      disableOrderMode={disableOrderMode}
+      disabled={!getCheckedProducts().length}
+    />
+  );
+
   return (
     <div className="page-pdg">
-      <Header title="Products" />
+      <Header
+        title="Products"
+        action={
+          orderModeState ? (
+            <CartLink quantity={cartQty} />
+          ) : (
+            <CreateOrderButton handleClick={enableOrderMode} disabled={true} />
+          )
+        }
+      />
       <table>
         <TableHeader headers={tableHeaders} />
         <tbody className="table-body">{products && renderProducts()}</tbody>
       </table>
-      {!editFormState.isOpen && renderAddProduct()}
+      {orderModeState
+        ? renderAddToCart()
+        : !editFormState.isOpen && renderAddProduct()}
     </div>
   );
 };

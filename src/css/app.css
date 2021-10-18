@@ -343,6 +343,34 @@ table {
   box-sizing: content-box;
 }
 
+.action-btn-row {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.action-btn-row button {
+  margin: 20px 10px 0;
+}
+
+.action-btn.cart-link {
+  display: flex;
+  justify-content: space-between;
+  background: #ffffff;
+  border: 1px solid #000000;
+  color: black;
+  padding: 0 24px;
+  width: 94px;
+}
+
+.action-btn.cart-link.empty {
+  width: 50px;
+}
+
+.action-btn.cart-link:hover {
+  border: 1px solid #000000;
+}
+
 .action-btn.cancel-btn {
   background-color: #dadada;
   color: #000;
@@ -362,6 +390,14 @@ table {
   cursor: pointer;
   font-weight: bold;
   transition: all 0.2s ease-in-out;
+}
+
+.action-btn:disabled {
+  background: rgba(1, 196, 216, 0.3);
+}
+
+.action-btn a {
+  color: white;
 }
 
 .action-btn:hover {
@@ -409,9 +445,10 @@ table {
   margin-right: 1em;
   cursor: pointer;
   color: black;
-  &:hover {
-    opacity: 1;
-  }
+}
+
+.close:hover {
+  opacity: 1;
 }
 
 .user-msg {

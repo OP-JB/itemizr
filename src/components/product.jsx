@@ -1,5 +1,4 @@
 import React, {Fragment, useState} from 'react';
-import {useOverflowState} from '../utility/hooks';
 import DataCells from './data-cells';
 import OverflowIcon from './overflow-icon';
 import OverflowMenu from './overflow-menu';
@@ -11,15 +10,24 @@ const Product = ({
   productData,
   editProduct,
   deleteProduct,
+  orderMode,
+  toggleCheckedProduct,
   overflowMenuState,
   toggleOverflow,
 }) => {
+  const [checkedState, setCheckedState] = useState(productData.checked);
+
+  const toggleCheck = () => {
+    setCheckedState(!checkedState);
+    toggleCheckedProduct(!checkedState, id);
+  };
+
   const renderPrice = (key) => {
     return key === 'price' ? (
       <div className="price-column">
         <p>{`$ ${productData.price}`}</p>
         <span className="unit-container">
-          <p>{productData.quantity}</p>
+          <p>{productData.packageQty}</p>
           <p>/</p>
           <p>{productData.unit}</p>
         </span>
@@ -27,7 +35,7 @@ const Product = ({
     ) : null;
   };
 
-  const priceKeys = ['price', 'quantity', 'unit'];
+  const priceKeys = ['price', 'packageQty', 'unit'];
   const productKeys = Object.keys(productData);
   const formattedProductData = productKeys.map((key) =>
     priceKeys.includes(key) ? renderPrice(key) : productData[key]
@@ -37,6 +45,14 @@ const Product = ({
   return (
     <Fragment>
       <tr className="light-font">
+        {orderMode && (
+          <td>
+            <button
+              className={`custom-radio-btn ${checkedState ? 'checked' : ''}`}
+              onClick={toggleCheck}
+            ></button>
+          </td>
+        )}
         <DataCells data={productValues} />
         <OverflowIcon toggleMenu={toggleOverflow} />
         {overflowMenuState && (
