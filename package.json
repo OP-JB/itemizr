@@ -6,7 +6,7 @@
   "license": "ISC",
   "main": "server/index.js",
   "dependencies": {
-    "axios": "^0.18.1",
+    "axios": "^0.21.2",
     "body-parser": "^1.18.3",
     "chalk": "^2.4.2",
     "css-loader": "^2.1.0",
